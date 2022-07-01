@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe "Cats", type: :request do
   describe "GET /index" do # an Endpoint
     it "gets all the cats from the database" do
-      Cat.create name:'Bentley', age:1, enjoys:'food', image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
+      Cat.create name:'Bentley', age:1, enjoys:'food every day', image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
 
       get '/cats'
       bentley = JSON.parse(response.body)
@@ -19,7 +19,7 @@ RSpec.describe "Cats", type: :request do
         cat: {
             name:'Bentley', 
             age:1, 
-            enjoys:'food', 
+            enjoys:'food every day', 
             image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
         }
       }
@@ -30,8 +30,8 @@ RSpec.describe "Cats", type: :request do
       expect(response).to have_http_status(200)
       expect(bentley.name).to eq 'Bentley'
       expect(bentley.age).to eq 1
-      expect(bentley.enjoys).to eq 'food'
-    end   
+      expect(bentley.enjoys).to eq 'food every day'
+    end
   end
 
   describe "Patch /cats/:id" do # an Endpoint
@@ -40,7 +40,7 @@ RSpec.describe "Cats", type: :request do
         cat: {
             name:'Bentley', 
             age:1, 
-            enjoys:'food', 
+            enjoys:'food every day', 
             image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
         }
       }
@@ -50,7 +50,7 @@ RSpec.describe "Cats", type: :request do
         cat: {
             name:'Bentley', 
             age: 3, 
-            enjoys:'yarn', 
+            enjoys:'playing with yarn', 
             image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
         }
       }
@@ -63,7 +63,7 @@ RSpec.describe "Cats", type: :request do
       expect(response).to have_http_status(200)
       expect(edited_bentley.name).to eq 'Bentley'
       expect(edited_bentley.age).to eq 3
-      expect(edited_bentley.enjoys).to eq 'yarn'
+      expect(edited_bentley.enjoys).to eq 'playing with yarn'
     end   
   end
 
@@ -73,7 +73,7 @@ RSpec.describe "Cats", type: :request do
         cat: {
             name:'Bentley', 
             age:1, 
-            enjoys:'food', 
+            enjoys:'food every day', 
             image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
         }
       }
@@ -96,7 +96,7 @@ RSpec.describe "Cats", type: :request do
   #       cat: {
   #           name:'Bentley', 
   #           age:1, 
-  #           enjoys:'food', 
+  #           enjoys:'food every day', 
   #           image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
   #       }
   #     }
@@ -110,7 +110,7 @@ RSpec.describe "Cats", type: :request do
   #     expect(response).to have_http_status(200)
   #     expect(show_bentley.name).to eq 'Bentley'
   #     expect(show_bentley.age).to eq 1
-  #     expect(show_bentley.enjoys).to eq 'food'
+  #     expect(show_bentley.enjoys).to eq 'food every day'
   #   end   
   # end
 end

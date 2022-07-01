@@ -12,7 +12,9 @@ class CatsController < ApplicationController
 
     def create
         cat = Cat.create(cat_params)
-        render json: cat
+        if cat.valid?
+            render json: cat
+        end
     end
 
     def update
