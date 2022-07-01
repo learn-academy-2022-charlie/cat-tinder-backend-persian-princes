@@ -1,25 +1,25 @@
 require 'rails_helper'
 
 RSpec.describe "Cats", type: :request do
-  describe "GET /index" do # an Endpoint
+  describe "GET /index" do
     it "gets all the cats from the database" do
-      Cat.create name:'Bentley', age:1, enjoys:'food', image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
+      Cat.create name:'Bentley', age:1, enjoys:'food every day', image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
 
       get '/cats'
       bentley = JSON.parse(response.body)
 
       expect(response).to have_http_status(200)
       expect(bentley.length).to eq 1
-    end   
+    end
   end
 
-  describe "POST /create" do # an Endpoint
+  describe "POST /create" do
     it "creates a new cat and adds it to the database" do
       cat_params = {
         cat: {
             name:'Bentley', 
             age:1, 
-            enjoys:'food', 
+            enjoys:'food every day', 
             image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
         }
       }
@@ -30,17 +30,73 @@ RSpec.describe "Cats", type: :request do
       expect(response).to have_http_status(200)
       expect(bentley.name).to eq 'Bentley'
       expect(bentley.age).to eq 1
-      expect(bentley.enjoys).to eq 'food'
-    end   
+      expect(bentley.enjoys).to eq 'food every day'
+    end
+    it "does not post a cat without a name to the database " do
+      cat_params = {
+        cat: {
+            age:1, 
+            enjoys:'food every day', 
+            image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
+        }
+      }
+      post '/cats', params: cat_params
+  
+      cat = JSON.parse(response.body)
+      expect(response).to have_http_status(422)
+      expect(cat['name']).to include "can't be blank"
+    end
+    it "does not post a cat without an age to the database " do
+      cat_params = {
+        cat: {
+            name:'Bentley',
+            enjoys:'food every day', 
+            image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
+        }
+      }
+      post '/cats', params: cat_params
+  
+      cat = JSON.parse(response.body)
+      expect(response).to have_http_status(422)
+      expect(cat['age']).to include "can't be blank"
+    end
+    it "does not post a cat without an enjoys to the database " do
+      cat_params = {
+        cat: {
+            name:'Bentley',
+            age:1, 
+            image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
+        }
+      }
+      post '/cats', params: cat_params
+  
+      cat = JSON.parse(response.body)
+      expect(response).to have_http_status(422)
+      expect(cat['enjoys']).to include "can't be blank"
+    end
+    it "does not post a cat without an image to the database " do
+      cat_params = {
+        cat: {
+            name:'Bentley',
+            age:1, 
+            enjoys:'food every day', 
+        }
+      }
+      post '/cats', params: cat_params
+  
+      cat = JSON.parse(response.body)
+      expect(response).to have_http_status(422)
+      expect(cat['image']).to include "can't be blank"
+    end
   end
 
-  describe "Patch /cats/:id" do # an Endpoint
+  describe "Patch /cats/:id" do
     it "updated an existing cat within the database" do
       cat_params = {
         cat: {
             name:'Bentley', 
             age:1, 
-            enjoys:'food', 
+            enjoys:'food every day', 
             image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
         }
       }
@@ -50,7 +106,7 @@ RSpec.describe "Cats", type: :request do
         cat: {
             name:'Bentley', 
             age: 3, 
-            enjoys:'yarn', 
+            enjoys:'playing with yarn', 
             image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
         }
       }
@@ -63,17 +119,73 @@ RSpec.describe "Cats", type: :request do
       expect(response).to have_http_status(200)
       expect(edited_bentley.name).to eq 'Bentley'
       expect(edited_bentley.age).to eq 3
-      expect(edited_bentley.enjoys).to eq 'yarn'
+      expect(edited_bentley.enjoys).to eq 'playing with yarn'
     end   
+    it "does not post a cat without a name to the database " do
+      cat_params = {
+        cat: {
+            age:1, 
+            enjoys:'food every day', 
+            image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
+        }
+      }
+      post '/cats', params: cat_params
+  
+      cat = JSON.parse(response.body)
+      expect(response).to have_http_status(422)
+      expect(cat['name']).to include "can't be blank"
+    end
+    it "does not post a cat without an age to the database " do
+      cat_params = {
+        cat: {
+            name:'Bentley',
+            enjoys:'food every day', 
+            image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
+        }
+      }
+      post '/cats', params: cat_params
+  
+      cat = JSON.parse(response.body)
+      expect(response).to have_http_status(422)
+      expect(cat['age']).to include "can't be blank"
+    end
+    it "does not post a cat without an enjoys to the database " do
+      cat_params = {
+        cat: {
+            name:'Bentley',
+            age:1, 
+            image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
+        }
+      }
+      post '/cats', params: cat_params
+  
+      cat = JSON.parse(response.body)
+      expect(response).to have_http_status(422)
+      expect(cat['enjoys']).to include "can't be blank"
+    end
+    it "does not post a cat without an image to the database " do
+      cat_params = {
+        cat: {
+            name:'Bentley',
+            age:1, 
+            enjoys:'food every day', 
+        }
+      }
+      post '/cats', params: cat_params
+  
+      cat = JSON.parse(response.body)
+      expect(response).to have_http_status(422)
+      expect(cat['image']).to include "can't be blank"
+    end
   end
 
-  describe "Delete /cats/:id" do # an Endpoint
+  describe "Delete /cats/:id" do
     it "removes a cat from the database" do
       cat_params = {
         cat: {
             name:'Bentley', 
             age:1, 
-            enjoys:'food', 
+            enjoys:'food every day', 
             image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
         }
       }
@@ -88,7 +200,7 @@ RSpec.describe "Cats", type: :request do
     end   
   end
 
-  # describe "Get /cats/:id" do # an Endpoint
+  # describe "Get /cats/:id" do
   #   it "shows a singular cat retrieved by id" do
   #     # Create a test to ensure /cats/:id and show method is responding correctly
   #     # I need to send something to my application and have it added to my database
@@ -96,7 +208,7 @@ RSpec.describe "Cats", type: :request do
   #       cat: {
   #           name:'Bentley', 
   #           age:1, 
-  #           enjoys:'food', 
+  #           enjoys:'food every day', 
   #           image:'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZnVubnklMjBjYXR8ZW58MHx8MHx8&w=1000&q=80'
   #       }
   #     }
@@ -110,7 +222,7 @@ RSpec.describe "Cats", type: :request do
   #     expect(response).to have_http_status(200)
   #     expect(show_bentley.name).to eq 'Bentley'
   #     expect(show_bentley.age).to eq 1
-  #     expect(show_bentley.enjoys).to eq 'food'
+  #     expect(show_bentley.enjoys).to eq 'food every day'
   #   end   
   # end
 end
